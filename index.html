@@ -3,38 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>エクステ色選択</title>
+<title>エクステ薬剤選定｜色味</title>
 
 <style>
 body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f7f7f7;
+  font-family: sans-serif;
+  background: #f5f7fa;
   padding: 20px;
-  text-align: center;
 }
-
-h1 { margin-bottom: 20px; }
-
+h1 { text-align: center; }
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 12px;
 }
-
 button {
-  padding: 20px;
-  font-size: 18px;
+  padding: 18px;
+  font-size: 16px;
   border-radius: 14px;
   border: none;
   background: #fff;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 </style>
 </head>
 
 <body>
-<h1>① エクステの色を選択</h1>
+
+<h1>① エクステ色を選択</h1>
 
 <div class="grid">
   <button onclick="go('1#')">1#</button>
@@ -51,9 +47,11 @@ button {
 </div>
 
 <script>
-function go(color){
+function go(color) {
   location.href = `hair.html?color=${encodeURIComponent(color)}`;
 }
 </script>
+
 </body>
 </html>
+
