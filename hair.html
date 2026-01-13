@@ -40,8 +40,8 @@ const params = new URLSearchParams(location.search);
 const color = params.get("color");
 
 function go(hair){
-  location.href = `result.html?color=${encodeURIComponent(color)}&hair=${hair}`;
-}
+ location.href = `result.html?color=${encodeURIComponent(color)}&type=${hair}`;
+
 </script>
 </body>
 </html>
