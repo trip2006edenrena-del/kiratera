@@ -4,76 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ記録</title>
-
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f7fa;
-  padding: 20px;
-}
-
-h1 {
-  margin-top: 0;
-}
-
-.box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 6px;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-textarea {
-  min-height: 80px;
-}
-
-.star-btn {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  font-size: 18px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-}
-
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 20px; }
+h1 { margin-top: 0; }
+.box { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
+label { font-weight: bold; display: block; margin-bottom: 6px; }
+input, textarea { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #ccc; }
+textarea { min-height: 80px; }
+.star-btn { width: 100%; padding: 14px; margin-top: 10px; font-size: 18px; border-radius: 12px; border: none; cursor: pointer; }
 .success { background: #ffd700; }
 .normal { background: #cfd8dc; }
 .fail { background: #ffb3b3; }
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: none;
-  background: #007aff;
-  color: #fff;
-  cursor: pointer;
-}
-
-.sub {
-  background: #9aa0a6;
-}
+button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-radius: 12px; border: none; background: #007aff; color: #fff; cursor: pointer; }
+.sub { background: #9aa0a6; }
 </style>
 </head>
-
 <body>
 
 <h1>📝 カルテ記録</h1>
@@ -99,8 +44,7 @@ button {
   <textarea id="memo" placeholder="例：放置時間が少し長かったかも"></textarea>
 </div>
 
-<button onclick="save()">💾 カルテを保存</button>
-
+<button onclick="saveRecord()">💾 カルテを保存</button>
 <button class="sub" onclick="location.href='index.html'">色味選択に戻る</button>
 <button class="sub" onclick="history.back()">前のページに戻る</button>
 
@@ -113,21 +57,20 @@ const hair = params.get("hair");
 let result = null;
 
 document.getElementById("info").innerHTML =
-  `色味：<strong>${color ?? "不明"}</strong><br>
-   髪の状態：<strong>${hair ?? "不明"}</strong>`;
+  `色味：<strong>${color ?? "不明"}</strong><br>髪の状態：<strong>${hair ?? "不明"}</strong>`;
 
 function setResult(r) {
   result = r;
   alert("評価を選択しました：" + r);
 }
 
-<script>
 function saveRecord() {
   const record = {
-    date: document.getElementById("date").value,
-    name: document.getElementById("name").value,
-    color: document.getElementById("color").innerText,
-    rating: document.querySelector('input[name="rating"]:checked')?.value,
+    date: new Date().toLocaleString(),
+    name: document.getElementById("customer").value,
+    color: color ?? "不明",
+    hair: hair ?? "不明",
+    rating: result,
     memo: document.getElementById("memo").value
   };
 
@@ -137,13 +80,12 @@ function saveRecord() {
   }
 
   const records = JSON.parse(localStorage.getItem("records") || "[]");
-  records.unshift(record); // 新しい順
+  records.unshift(record); // 新しい順に保存
   localStorage.setItem("records", JSON.stringify(records));
 
-  location.href = "record_list.html";
+  alert("カルテを保存しました！");
+  location.href = "record_list.html"; // 保存後に一覧へ移動
 }
 </script>
-
-
 </body>
 </html>
