@@ -5,37 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ記録</title>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 80px 20px 20px; }
-h1 { margin-top: 0; }
-.box { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fa;
+  padding: 120px 20px 20px; /* 上部固定ナビバー分 */
+  margin: 0;
+}
+h1 { margin-top: 0; text-align: center; }
+
+.box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
 label { font-weight: bold; display: block; margin-bottom: 6px; }
-input, textarea { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #ccc; }
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
 textarea { min-height: 80px; }
-.star-btn { width: 100%; padding: 14px; margin-top: 10px; font-size: 18px; border-radius: 12px; border: none; cursor: pointer; color: #fff; }
-.success { background: #ffd700; color: #000; }
-.normal { background: #cfd8dc; color: #000; }
+
+.star-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+.success { background: #ffd700; }
+.normal { background: #cfd8dc; }
 .fail { background: #ff4d4d; color: #fff; }
-button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-radius: 12px; border: none; cursor: pointer; }
-.sub { background: #007aff; color: #fff; }
-.fixed-top {
+
+button.save-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+  background: #007aff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.sub { background: #9aa0a6; }
+
+/* 上部ナビバー */
+.fixed-top-container {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
   background: #007aff;
-  color: #fff;
-  padding: 12px 20px;
-  font-size: 16px;
   z-index: 1000;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+.fixed-top-container button {
+  flex: 1;
+  min-width: 120px;
   border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  background: #005fcc;
   cursor: pointer;
-  border-radius: 0 0 12px 12px;
+}
+@media(max-width:600px){
+  .fixed-top-container{flex-direction:column; gap:6px;}
+  .fixed-top-container button{font-size:14px;}
 }
 </style>
 </head>
 <body>
 
-<button class="fixed-top" onclick="location.href='record_list.html'">📄 保存済みカルテ一覧へ</button>
+<!-- 上部ナビバー -->
+<div class="fixed-top-container">
+  <button onclick="location.href='record_list.html'">📄 保存済みカルテ一覧</button>
+  <button onclick="location.href='index.html'">🎨 色味選択</button>
+</div>
 
 <h1>📝 カルテ記録</h1>
 
@@ -60,47 +121,45 @@ button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-r
   <textarea id="memo" placeholder="例：放置時間が少し長かったかも"></textarea>
 </div>
 
-<button onclick="saveRecord()">💾 カルテを保存</button>
-<button class="sub" onclick="location.href='index.html'">色味選択に戻る</button>
-<button class="sub" onclick="history.back()">前のページに戻る</button>
+<button class="save-btn" onclick="saveRecord()">💾 カルテを保存</button>
 
 <script>
-/* URLから色味・髪状態を取得 */
+// URLから色味・髪状態を取得
 const params = new URLSearchParams(location.search);
 const color = params.get("color");
+const hair = params.get("hair");
+let result = null;
+
+// 髪の状態変換
 let hairState = "不明";
-if(hair === "color") hairState = "カラー毛";
-else if(hair === "bleach") hairState = "ブリーチ毛";
+if(hair==="color") hairState="カラー毛";
+else if(hair==="bleach") hairState="ブリーチ毛";
 
-document.getElementById("info").innerHTML =
-  `色味：<strong>${color ?? "不明"}</strong><br>髪の状態：<strong>${hairState}</strong>`;
+document.getElementById("info").innerHTML = `色味：<strong>${color??'不明'}</strong><br>髪の状態：<strong>${hairState}</strong>`;
 
-function setResult(r) {
-  result = r;
-  alert("評価を選択しました：" + r);
-}
+// 評価選択
+function setResult(r){ result=r; alert("評価を選択しました："+r); }
 
-function saveRecord() {
+// 保存
+function saveRecord(){
+  const name = document.getElementById("customer").value;
+  const memo = document.getElementById("memo").value;
+  if(!name || !result){ alert("名前と評価は必須です"); return; }
+
   const record = {
     date: new Date().toLocaleString(),
-    name: document.getElementById("customer").value,
+    name,
     color: color ?? "不明",
-    hair: hair ?? "不明",
+    hair: hairState,
     rating: result,
-    memo: document.getElementById("memo").value
+    memo
   };
-
-  if (!record.name || !record.rating) {
-    alert("名前と評価は必須です");
-    return;
-  }
 
   const records = JSON.parse(localStorage.getItem("records") || "[]");
   records.unshift(record);
   localStorage.setItem("records", JSON.stringify(records));
 
-  alert("カルテを保存しました！");
-  location.href = "record_list.html";
+  location.href="record_list.html";
 }
 </script>
 </body>
