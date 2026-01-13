@@ -9,15 +9,43 @@
 body {
   font-family: sans-serif;
   background: #f5f7fa;
-  padding: 20px;
+  padding: 80px 20px 20px; /* 上部固定ボタン分の余白 */
+  margin: 0;
 }
 h1 { text-align: center; }
+
+/* 上部固定ボタン */
+.fixed-top-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  background: #007aff;
+  padding: 12px 10px;
+  z-index: 1000;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+.fixed-top-container button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #fff;
+  background: #005fcc;
+}
+
+/* 色選択ボタン */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
-button {
+.grid button {
   padding: 18px;
   font-size: 16px;
   border-radius: 14px;
@@ -25,10 +53,22 @@ button {
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+  .fixed-top-container { flex-direction: column; gap: 6px; padding: 10px; }
+  .fixed-top-container button { font-size: 14px; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 
 <body>
+
+<!-- 上部固定ボタン -->
+<div class="fixed-top-container">
+  <button onclick="location.href='record_list.html'">📄 保存済みカルテ一覧</button>
+</div>
 
 <h1>① エクステ色を選択</h1>
 
@@ -54,4 +94,3 @@ function go(color) {
 
 </body>
 </html>
-
