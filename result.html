@@ -7,7 +7,7 @@
 
 <style>
 body {
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f5f7fa;
   padding: 20px;
 }
@@ -17,20 +17,6 @@ body {
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-}
-
-h1 {
-  margin-bottom: 12px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-top: 10px;
 }
 
 button {
@@ -45,17 +31,17 @@ button {
 }
 
 .sub {
-  background: #d1d1d1;
-  color: #333;
+  background: #9aa0a6;
 }
 
-.karte {
-  background: #fff;
-  padding: 14px;
-  border-radius: 12px;
-  margin-top: 10px;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+.stella { color: #f2a7c4; font-weight: bold; }
+.mood { color: #aaa; font-weight: bold; }
+.cocoa { color: #b38b5d; font-weight: bold; }
+
+.warning {
+  color: red;
+  font-weight: bold;
+  margin-top: 8px;
 }
 </style>
 </head>
@@ -64,118 +50,64 @@ button {
 
 <h1>③ 薬剤選定</h1>
 
-<div class="box" id="result">読み込み中...</div>
+<div class="box" id="result">読み込み中…</div>
 
-<div class="box">
-  <h2>🧾 カルテ保存</h2>
-  <input id="customer" placeholder="お客さま名">
-  <button onclick="saveKarte()">この内容で保存</button>
-</div>
-
-<div class="box">
-  <h2>📚 カルテ履歴</h2>
-  <div id="history"></div>
-</div>
-
-<button onclick="location.href='index.html'">色味に戻る</button>
-<button class="sub" onclick="location.href='hair.html'">髪の状態に戻る</button>
+<button onclick="goRecord()">この内容で記録する</button>
+<button class="sub" onclick="history.back()">髪の状態に戻る</button>
+<button class="sub" onclick="location.href='index.html'">色味に戻る</button>
 
 <script>
-/* URLパラメータ取得 */
+const data = {
+  "1#": { both: "オフブラック" },
+  "NB": { both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍" },
+  "2#": { both: "<span class='stella'>ステラミルクティー</span>5 / オキシ4.5% 2倍" },
+  "3#": {
+    color: "<span class='stella'>ステラミルクティー</span>7 / オキシ3% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ3%"
+  },
+  "4#": {
+    color: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ4.5% 2倍"
+  },
+  "5#": {
+    color: "<span class='stella'>ステラミルクティー</span>13 / オキシ6% 2倍",
+    bleach: "<span class='cocoa'>チルココア</span>9 / オキシ6% 2倍"
+  },
+  "6#": {
+    color: "<span class='mood'>ムードスモーク</span>13 / オキシ6% 2倍",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ6%"
+  },
+  "6A": {
+    color: "<div class='warning'>⚠ カラー毛不可（ブリーチ必須）</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍"
+  },
+  "7A": {
+    color: "<div class='warning'>⚠ カラー毛不可（ブリーチ必須）</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + ステラ13（1:1）/ オキシ4.5% 2倍"
+  },
+  "8#": {
+    color: "<div class='warning'>⚠ カラー毛不可（ブリーチ必須）</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
+  },
+  "29#": { both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍" }
+};
+
 const params = new URLSearchParams(location.search);
 const color = params.get("color");
 const hair = params.get("hair");
 
-/* 薬剤データ */
-const data = {
-  "1#": { both: "オフブラック" },
-  "NB": { both: "ステラミルクティー5 / オキシ3% 2倍" },
-  "2#": { both: "ステラミルクティー5 / オキシ4.5% 2倍" },
-  "3#": {
-    color: "ステラミルクティー7 / オキシ3% 2倍",
-    bleach: "ムードスモーク7 + チルココア7（1:1）/ オキシ3%"
-  },
-  "4#": {
-    color: "ステラミルクティー9 / オキシ4.5% 2倍",
-    bleach: "ムードスモーク7 + チルココア7（1:1）/ オキシ4.5% 2倍"
-  },
-  "5#": {
-    color: "ステラミルクティー13 / オキシ6% 2倍",
-    bleach: "チルココア9 / オキシ6% 2倍"
-  },
-  "6#": {
-    color: "ムードスモーク13 / オキシ6% 2倍",
-    bleach: "ステラミルクティー9 + チルココア9 / オキシ6%"
-  },
-  "6A": {
-    color: "⚠ カラー毛不可（ブリーチ必須）",
-    bleach: "ステラミルクティー9 / オキシ4.5% 2倍"
-  },
-  "7A": {
-    color: "⚠ カラー毛不可（ブリーチ必須）",
-    bleach: "ステラミルクティー9 + ステラ13 / オキシ4.5% 2倍"
-  },
-  "8#": {
-    color: "⚠ カラー毛不可（ブリーチ必須）",
-    bleach: "ステラミルクティー13 + チルココア9（10%）/ オキシ3% 2倍"
-  },
-  "29#": { both: "ステラミルクティー13 / オキシ3% 2倍" }
-};
-
-/* 結果表示 */
 const box = document.getElementById("result");
+
 if (!color || !hair) {
-  box.innerText = "選択情報が不足しています";
+  box.innerHTML = "選択情報が不足しています";
 } else {
   const item = data[color];
-  const text = item.both ?? item[hair];
-  box.innerHTML = `<strong>${color} / ${hair === "color" ? "カラー毛" : "ブリーチ毛"}</strong><br>${text}`;
+  box.innerHTML = item.both ?? item[hair];
 }
 
-/* カルテ保存 */
-function saveKarte() {
-  const name = document.getElementById("customer").value.trim();
-  if (!name) {
-    alert("お客さま名を入力してください");
-    return;
-  }
-
-  const karte = {
-    date: new Date().toLocaleString(),
-    name,
-    color,
-    hair,
-    result: box.innerText
-  };
-
-  const list = JSON.parse(localStorage.getItem("karteList") || "[]");
-  list.unshift(karte);
-  if (list.length > 10) list.pop();
-
-  localStorage.setItem("karteList", JSON.stringify(list));
-  document.getElementById("customer").value = "";
-  renderHistory();
+function goRecord() {
+  location.href = `record.html?color=${encodeURIComponent(color)}&hair=${hair}`;
 }
-
-/* 履歴表示 */
-function renderHistory() {
-  const area = document.getElementById("history");
-  const list = JSON.parse(localStorage.getItem("karteList") || "[]");
-
-  area.innerHTML = list.length === 0 ? "履歴なし" : "";
-
-  list.forEach(k => {
-    area.innerHTML += `
-      <div class="karte">
-        <strong>${k.name}</strong><br>
-        ${k.date}<br>
-        ${k.result}
-      </div>
-    `;
-  });
-}
-
-renderHistory();
 </script>
 
 </body>
