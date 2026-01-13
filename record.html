@@ -68,12 +68,12 @@ button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-r
 /* URLから色味・髪状態を取得 */
 const params = new URLSearchParams(location.search);
 const color = params.get("color");
-const hair = params.get("hair");
-
-let result = null;
+let hairState = "不明";
+if(hair === "color") hairState = "カラー毛";
+else if(hair === "bleach") hairState = "ブリーチ毛";
 
 document.getElementById("info").innerHTML =
-  `色味：<strong>${color ?? "不明"}</strong><br>髪の状態：<strong>${hair ?? "不明"}</strong>`;
+  `色味：<strong>${color ?? "不明"}</strong><br>髪の状態：<strong>${hairState}</strong>`;
 
 function setResult(r) {
   result = r;
