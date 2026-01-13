@@ -77,4 +77,28 @@ const data = {
   },
   "6A": {
     color: "<div class='warning'>⚠ カラー毛不可<br>※ 必ずブリーチが必要</div>",
-    bleach: "<span class='stella'>ステラミル
+    bleach: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍"
+  },
+  "7A": {
+    color: "<div class='warning'>⚠ カラー毛不可<br>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + ステラ13（1:1）/ オキシ4.5% 2倍"
+  },
+  "8#": {
+    color: "<div class='warning'>⚠ カラー毛不可<br>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
+  },
+  "29#": { both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍" }
+};
+
+const box = document.getElementById("result");
+
+if (!color || !hair) {
+  box.innerHTML = "選択情報が不足しています";
+} else {
+  const item = data[color];
+  box.innerHTML = item.both ?? item[hair];
+}
+</script>
+
+</body>
+</html>
