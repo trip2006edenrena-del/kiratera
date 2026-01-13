@@ -7,55 +7,54 @@
 
 <style>
 body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: sans-serif;
   background: #f5f7fa;
   padding: 20px;
 }
-
 .box {
   background: #fff;
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 14px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: none;
-  background: #007aff;
-  color: white;
-}
-
-.stella { color:#f3a4c7; font-weight:600; }
-.mood { color:#9ea3a8; font-weight:600; }
-.cocoa { color:#b08a63; font-weight:600; }
-
+.stella { color: #f2a6c9; }
+.mood { color: #aaa; }
+.cocoa { color: #c49a6c; }
 .warning {
   color: red;
   font-weight: bold;
 }
-
-.customer-note {
-  font-size: 14px;
-  color: #555;
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 14px;
+  font-size: 16px;
+  border-radius: 14px;
+  border: none;
+  background: #007aff;
+  color: white;
+}
+.gray {
+  background: #ccc;
+  color: #333;
 }
 </style>
 </head>
 
 <body>
 
-<h1>薬剤選定</h1>
+<h1>③ 薬剤選定</h1>
 
-<div class="box" id="result">読み込み中…</div>
+<div class="box" id="result"></div>
 
 <button onclick="location.href='index.html'">色味に戻る</button>
-<button onclick="location.href='hair.html'">髪の状態に戻る</button>
+<button class="gray" onclick="history.back()">髪の状態に戻る</button>
 
 <script>
+const params = new URLSearchParams(location.search);
+const color = params.get("color");
+const hair = params.get("hair");
+
 const data = {
   "1#": { both: "オフブラック" },
   "NB": { both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍" },
@@ -77,39 +76,5 @@ const data = {
     bleach: "<span class='stella'>ステラミルクティー</span>9 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ6%"
   },
   "6A": {
-    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ 必ずブリーチが必要</div>",
-    bleach: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍"
-  },
-  "7A": {
-    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
-    bleach: "<span class='stella'>ステラミルクティー</span>9 + ステラ13（1:1）/ オキシ4.5% 2倍"
-  },
-  "8#": {
-    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
-    bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
-  },
-  "29#": { both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍" }
-};
-
-// URLパラメータ取得
-const params = new URLSearchParams(location.search);
-const color = params.get("color");
-const type = params.get("type");
-
-const resultBox = document.getElementById("result");
-
-if (!color || !type) {
-  resultBox.innerHTML = "選択情報がありません。最初からやり直してください。";
-} else {
-  const item = data[color];
-
-  if (item.both) {
-    resultBox.innerHTML = item.both;
-  } else {
-    resultBox.innerHTML = type === "color" ? item.color : item.bleach;
-  }
-}
-</script>
-
-</body>
-</html>
+    color: "<div class='warning'>⚠ カラー毛不可<br>※ 必ずブリーチが必要</div>",
+    bleach: "<span class='stella'>ステラミル
