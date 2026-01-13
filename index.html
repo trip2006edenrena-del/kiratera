@@ -9,7 +9,7 @@
 body {
   font-family: sans-serif;
   background: #f5f7fa;
-  padding: 80px 20px 20px; /* 上部固定ボタン分の余白 */
+  padding: 80px 20px 20px; /* 上部固定ボタン分 */
   margin: 0;
 }
 h1 { text-align: center; }
@@ -44,6 +44,7 @@ h1 { text-align: center; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  margin-top: 20px;
 }
 .grid button {
   padding: 18px;
@@ -55,7 +56,7 @@ h1 { text-align: center; }
   cursor: pointer;
 }
 
-/* レスポンシブ対応 */
+/* レスポンシブ */
 @media (max-width: 600px) {
   .fixed-top-container { flex-direction: column; gap: 6px; padding: 10px; }
   .fixed-top-container button { font-size: 14px; }
@@ -68,7 +69,6 @@ h1 { text-align: center; }
 
 <h1>① エクステ色を選択</h1>
 
-<!-- 色選択グリッド -->
 <div class="grid">
   <button onclick="go('1#')">1#</button>
   <button onclick="go('NB')">NB</button>
@@ -84,13 +84,16 @@ h1 { text-align: center; }
 </div>
 
 <script>
-// 色選択遷移
+// 色選択ページ遷移
 function go(color) {
   location.href = `hair.html?color=${encodeURIComponent(color)}`;
 }
 
-// ページロード時に固定ボタンを動的追加
-window.addEventListener("DOMContentLoaded", () => {
+// 上部固定ボタンを追加する関数
+function addTopButton() {
+  // 既に追加済みなら追加しない
+  if(document.querySelector('.fixed-top-container')) return;
+
   const container = document.createElement("div");
   container.className = "fixed-top-container";
 
@@ -100,7 +103,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
   container.appendChild(listBtn);
   document.body.prepend(container);
-});
+}
+
+// ページロード時
+window.addEventListener("DOMContentLoaded", addTopButton);
+// history.backなどブラウザ戻る時も対応
+window.addEventListener("pageshow", addTopButton);
 </script>
 
 </body>
