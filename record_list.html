@@ -5,46 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ一覧</title>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 80px 20px 20px; }
-h1 { margin-top: 0; }
-.card { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
-.card p { margin: 4px 0; }
-button { padding: 8px 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 8px; }
-.delete-btn { background: #ff4d4d; color: #fff; }
-.fixed-top {
+/* 基本スタイル */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fa;
+  padding: 100px 20px 20px;
+  margin: 0;
+}
+h1 { margin-top: 0; text-align: center; }
+
+/* 上部固定ボタンコンテナ */
+.fixed-top-container {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* 左右に分散 */
+  gap: 8px;
   background: #007aff;
-  color: #fff;
-  padding: 12px 20px;
-  font-size: 16px;
+  padding: 12px 10px;
   z-index: 1000;
-  border: none;
-  cursor: pointer;
-  border-radius: 0 0 12px 12px;
+  box-sizing: border-box;
+  flex-wrap: wrap; /* 狭い画面では縦並び */
 }
-.success { background: #ffd700; }
-.normal { background: #cfd8dc; }
-.fail { background: #ff4d4d; color: #fff; }
+.fixed-top-container button {
+  flex: 1;
+  min-width: 140px;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 16px;
+  cursor: pointer;
+  color: #fff;
+  background: #005fcc;
+}
+
+/* カルテカード */
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+.card p { margin: 6px 0; }
+
+/* 評価の色分け */
+.success { background: #ffd700; padding: 4px 8px; border-radius: 6px; color: #000; }
+.normal { background: #cfd8dc; padding: 4px 8px; border-radius: 6px; color: #000; }
+.fail { background: #ff4d4d; padding: 4px 8px; border-radius: 6px; color: #fff; }
+
+/* 削除ボタン */
+.delete-btn { background: #ff4d4d; color: #fff; padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; margin-top: 6px; }
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+  .fixed-top-container {
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+  }
+  .fixed-top-container button { font-size: 14px; min-width: auto; }
+}
 </style>
 </head>
 <body>
 
-<button class="fixed-top" onclick="location.href='record.html'">📝 新しいカルテ作成</button>
+<!-- 上部固定ボタン（横並び、狭い画面は縦並び） -->
+<div class="fixed-top-container">
+  <button onclick="location.href='record.html'">📝 新しいカルテ作成</button>
+  <button onclick="location.href='index.html'">🎨 色味選択に戻る</button>
+</div>
 
 <h1>📄 保存済みカルテ一覧</h1>
 <div id="list"></div>
 
 <script>
+// カルテ一覧表示
 function renderList() {
   const list = document.getElementById("list");
   const records = JSON.parse(localStorage.getItem("records") || "[]");
+
   if(records.length === 0){
-    list.innerHTML = "<p>保存されたカルテはありません。</p>";
+    list.innerHTML = "<p style='text-align:center;'>保存されたカルテはありません。</p>";
     return;
   }
+
   list.innerHTML = "";
   records.forEach((r, index) => {
     const div = document.createElement("div");
@@ -69,6 +116,7 @@ function renderList() {
   });
 }
 
+// 削除処理
 function deleteRecord(idx){
   const records = JSON.parse(localStorage.getItem("records") || "[]");
   if(!confirm("本当に削除しますか？")) return;
@@ -77,6 +125,7 @@ function deleteRecord(idx){
   renderList();
 }
 
+// 初期表示
 renderList();
 </script>
 
