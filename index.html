@@ -4,67 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>エクステ薬剤選定｜色味</title>
-
 <style>
-body {
-  font-family: sans-serif;
-  background: #f5f7fa;
-  padding: 80px 20px 20px; /* 上部固定ボタン分 */
-  margin: 0;
+body{
+  font-family:sans-serif;
+  background:#f5f7fa;
+  padding:80px 20px 20px;
+  margin:0;
 }
-h1 { text-align: center; }
-
-/* 上部固定ボタン */
-.fixed-top-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  background: #007aff;
-  padding: 12px 10px;
-  z-index: 1000;
-  box-sizing: border-box;
-  flex-wrap: wrap;
-}
-.fixed-top-container button {
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 16px;
-  cursor: pointer;
-  color: #fff;
-  background: #005fcc;
-}
-
-/* 色選択ボタン */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 20px;
-}
-.grid button {
-  padding: 18px;
-  font-size: 16px;
-  border-radius: 14px;
-  border: none;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  cursor: pointer;
-}
-
-/* レスポンシブ */
-@media (max-width: 600px) {
-  .fixed-top-container { flex-direction: column; gap: 6px; padding: 10px; }
-  .fixed-top-container button { font-size: 14px; }
-  .grid { grid-template-columns: repeat(2, 1fr); }
-}
+h1{text-align:center;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;}
+.grid button{padding:18px;font-size:16px;border-radius:14px;border:none;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,0.08);cursor:pointer;}
+.fixed-top-container{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:flex-end;gap:8px;padding:12px;background:#007aff;z-index:1000;flex-wrap:wrap;box-sizing:border-box;}
+.fixed-top-container button{border:none;border-radius:8px;padding:10px 16px;font-size:16px;color:#fff;background:#005fcc;cursor:pointer;}
+@media(max-width:600px){.fixed-top-container{flex-direction:column;gap:6px;}.fixed-top-container button{font-size:14px;}}
 </style>
 </head>
-
 <body>
 
 <h1>① エクステ色を選択</h1>
@@ -84,32 +38,21 @@ h1 { text-align: center; }
 </div>
 
 <script>
-// 色選択ページ遷移
-function go(color) {
-  location.href = `hair.html?color=${encodeURIComponent(color)}`;
-}
+function go(color){ location.href=`hair.html?color=${encodeURIComponent(color)}`; }
 
-// 上部固定ボタンを追加する関数
-function addTopButton() {
-  // 既に追加済みなら追加しない
+// 上部固定ボタン追加（ブラウザ戻るも対応）
+function addTopButton(){
   if(document.querySelector('.fixed-top-container')) return;
-
-  const container = document.createElement("div");
-  container.className = "fixed-top-container";
-
-  const listBtn = document.createElement("button");
-  listBtn.textContent = "📄 保存済みカルテ一覧";
-  listBtn.onclick = () => location.href = 'record_list.html';
-
+  const container=document.createElement("div");
+  container.className="fixed-top-container";
+  const listBtn=document.createElement("button");
+  listBtn.textContent="📄 保存済みカルテ一覧";
+  listBtn.onclick=()=>location.href='record_list.html';
   container.appendChild(listBtn);
   document.body.prepend(container);
 }
-
-// ページロード時
 window.addEventListener("DOMContentLoaded", addTopButton);
-// history.backなどブラウザ戻る時も対応
 window.addEventListener("pageshow", addTopButton);
 </script>
-
 </body>
 </html>
