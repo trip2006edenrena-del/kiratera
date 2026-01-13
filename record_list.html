@@ -12,39 +12,104 @@ body {
   padding: 20px;
 }
 
+h1 {
+  margin-bottom: 16px;
+}
+
 .card {
   background: #fff;
   padding: 16px;
   border-radius: 14px;
-  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
+.row {
+  margin-bottom: 6px;
+}
+
+.label {
+  font-size: 12px;
+  color: #666;
+}
+
+.value {
+  font-size: 15px;
+}
+
+.star {
+  font-size: 18px;
+}
+
+.memo {
+  background: #f0f2f5;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 8px;
+  white-space: pre-wrap;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  margin-top: 40px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+  background: #007aff;
+  color: white;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📋 保存カルテ一覧</h1>
+<h1>📋 カルテ一覧</h1>
+
 <div id="list"></div>
 
+<button onclick="location.href='index.html'">選定に戻る</button>
+
 <script>
+const listBox = document.getElementById("list");
 const records = JSON.parse(localStorage.getItem("records") || "[]");
-const list = document.getElementById("list");
 
 if (records.length === 0) {
-  list.innerHTML = "まだカルテがありません";
+  listBox.innerHTML = "<div class='empty'>保存されたカルテはまだありません</div>";
 } else {
   records.reverse().forEach(r => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
-      <strong>${r.name}</strong><br>
-      ${r.date}<br>
-      色味：${r.color}<br>
-      髪：${r.hair}<br>
-      評価：${r.result}<br>
-      メモ：${r.memo || "なし"}
+      <div class="row">
+        <div class="label">日付</div>
+        <div class="value">${r.date}</div>
+      </div>
+
+      <div class="row">
+        <div class="label">お客さま名</div>
+        <div class="value">${r.name || "（未入力）"}</div>
+      </div>
+
+      <div class="row">
+        <div class="label">色味</div>
+        <div class="value">${r.color}</div>
+      </div>
+
+      <div class="row">
+        <div class="label">評価</div>
+        <div class="value star">${r.result}</div>
+      </div>
+
+      <div class="memo">${r.memo || "（メモなし）"}</div>
     `;
-    list.appendChild(div);
+    listBox.appendChild(div);
   });
 }
 </script>
