@@ -9,46 +9,69 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f7f7f7;
-  margin: 0;
-  padding: 16px;
+  padding: 20px;
   text-align: center;
 }
 
 h1 {
-  font-size: 22px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .section {
-  margin-bottom: 16px;
+  margin-top: 30px;
 }
 
-.colors button,
-.hairtype button {
-  width: 30%;
-  margin: 6px;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 12px;
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+button {
+  padding: 16px;
+  border-radius: 14px;
   border: none;
+  font-size: 16px;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
 
-.colors button:active,
-.hairtype button:active {
-  transform: scale(0.95);
+button.active {
+  outline: 3px solid #ffb84d;
+}
+
+/* 色表現 */
+.stella { color: #f2a6b3; font-weight: bold; }
+.mood { color: #b5b5b5; font-weight: bold; }
+.cocoa { color: #c49a6c; font-weight: bold; }
+
+/* 警告 */
+.warning {
+  color: #d60000;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.customer-note {
+  color: #d60000;
+  font-size: 14px;
+  margin-top: 6px;
 }
 
 .result {
   background: #fff;
-  padding: 16px;
-  border-radius: 16px;
-  margin-top: 16px;
-  font-size: 15px;
-  line-height: 1.6;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  min-height: 80px;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.small-note {
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -57,97 +80,110 @@ h1 {
 
 <h1>🎨 エクステ薬剤選定</h1>
 
-<div class="section colors">
-  <p>① エクステ色を選択</p>
-  <button onclick="selectColor('1')">1#</button>
-  <button onclick="selectColor('NB')">NB</button>
-  <button onclick="selectColor('2')">2#</button>
-  <button onclick="selectColor('3')">3#</button>
-  <button onclick="selectColor('4')">4#</button>
-  <button onclick="selectColor('5')">5#</button>
-  <button onclick="selectColor('6')">6#</button>
-  <button onclick="selectColor('6A')">6A</button>
-  <button onclick="selectColor('7A')">7A</button>
-  <button onclick="selectColor('8')">8#</button>
-  <button onclick="selectColor('29')">29#</button>
+<div class="section">
+  <h2>① エクステ色を選択</h2>
+  <div class="buttons" id="colorButtons"></div>
 </div>
 
-<div class="section hairtype">
-  <p>② 髪の状態</p>
-  <button onclick="selectHair('color')">カラー毛</button>
-  <button onclick="selectHair('bleach')">ブリーチ毛</button>
+<div class="section">
+  <h2>② 髪の状態</h2>
+  <div class="buttons">
+    <button onclick="selectHair('color')">カラー毛</button>
+    <button onclick="selectHair('bleach')">ブリーチ毛</button>
+  </div>
 </div>
 
-<div class="result" id="result">
-  ここに薬剤が表示されます
+<div class="section">
+  <h2>③ 薬剤選定</h2>
+  <div class="result" id="result">選択してください</div>
 </div>
 
 <script>
-let selectedColor = "";
-let selectedHair = "";
-
-const recipes = {
-  "1": {
-    color: "オフブラック",
-    bleach: "オフブラック"
+const data = {
+  "1#": {
+    both: "オフブラック"
   },
   "NB": {
-    color: "ステラミルクティー5／オキシ3% 2倍",
-    bleach: "ステラミルクティー5／オキシ3% 2倍"
+    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍"
   },
-  "2": {
-    color: "ステラミルクティー5／オキシ4.5% 2倍",
-    bleach: "ステラミルクティー5／オキシ4.5% 2倍"
+  "2#": {
+    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ4.5% 2倍"
   },
-  "3": {
-    color: "ステラミルクティー7／オキシ3% 2倍",
-    bleach: "ムードスモーク＋チルココア（1:1）／オキシ3%"
+  "3#": {
+    color: "<span class='stella'>ステラミルクティー</span>7 / オキシ3% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span> + <span class='cocoa'>チルココア</span>（1:1）/ オキシ3%"
   },
-  "4": {
-    color: "ステラミルクティー9／オキシ4.5% 2倍",
-    bleach: "ムードスモーク7＋チルココア7（1:1）／オキシ4.5% 2倍"
+  "4#": {
+    color: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ4.5% 2倍"
   },
-  "5": {
-    color: "ステラミルクティー13／オキシ6% 2倍",
-    bleach: "チルココア9／オキシ6% 2倍"
+  "5#": {
+    color: "<span class='stella'>ステラミルクティー</span>13 / オキシ6% 2倍",
+    bleach: "<span class='cocoa'>チルココア</span>9 / オキシ6% 2倍"
   },
-  "6": {
-    color: "ムードスモーク13／オキシ6% 2倍",
-    bleach: "ステラミルクティー9＋チルココア9（1:1）／オキシ3% 2倍"
+  "6#": {
+    color: "<span class='mood'>ムードスモーク</span>13 / オキシ6% 2倍",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ6%"
   },
   "6A": {
-    color: "❌ カラー毛不可",
-    bleach: "ステラミルクティー9／オキシ4.5% 2倍"
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチしないとできません</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍"
   },
   "7A": {
-    color: "❌ カラー毛不可",
-    bleach: "ステラミルクティー9＋ステラ13（1:1）／オキシ4.5% 2倍"
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + ステラ13（1:1）/ オキシ4.5% 2倍"
   },
-  "8": {
-    color: "❌ カラー毛不可",
-    bleach: "ステラミルクティー13＋チルココア9（10%）／オキシ3% 2倍"
+  "8#": {
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
   },
-  "29": {
-    bleach: "ステラミルクティー13／オキシ3% 2倍"
+  "29#": {
+    both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍"
   }
 };
 
-function selectColor(color) {
-  selectedColor = color;
-  showResult();
-}
+let selectedColor = null;
+let selectedHair = null;
+
+const colorButtons = document.getElementById("colorButtons");
+
+Object.keys(data).forEach(c => {
+  const btn = document.createElement("button");
+  btn.textContent = c;
+  btn.onclick = () => {
+    selectedColor = c;
+    updateResult();
+    document.querySelectorAll("#colorButtons button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  };
+  colorButtons.appendChild(btn);
+});
 
 function selectHair(hair) {
   selectedHair = hair;
-  showResult();
+  updateResult();
 }
 
-function showResult() {
+function updateResult() {
   if (!selectedColor || !selectedHair) return;
 
-  const recipe = recipes[selectedColor][selectedHair];
-  document.getElementById("result").innerHTML =
-    `<strong>${selectedColor} / ${selectedHair === "color" ? "カラー毛" : "ブリーチ毛"}</strong><br>${recipe || "設定なし"}`;
+  const info = data[selectedColor];
+  let text = "";
+
+  if (info.both) {
+    text = info.both;
+  } else {
+    text = info[selectedHair];
+  }
+
+  document.getElementById("result").innerHTML = `
+    <strong>${selectedColor} / ${selectedHair === "color" ? "カラー毛" : "ブリーチ毛"}</strong><br><br>
+    ${text}
+    <div class="small-note">
+      ⚠ 縮毛矯正履歴がある場合は暗くなりやすいため<br>
+      → ワントーン上げ / オキシ6% 推奨
+    </div>
+  `;
 }
 </script>
 
