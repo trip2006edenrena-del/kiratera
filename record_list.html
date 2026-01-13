@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ一覧</title>
 
 <style>
@@ -12,58 +11,27 @@ body {
   padding: 20px;
 }
 
-h1 {
-  margin-bottom: 16px;
-}
-
 .card {
-  background: #fff;
+  background: white;
   padding: 16px;
   border-radius: 14px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
 }
 
-.row {
-  margin-bottom: 6px;
-}
-
-.label {
-  font-size: 12px;
-  color: #666;
-}
-
-.value {
-  font-size: 15px;
-}
-
-.star {
-  font-size: 18px;
-}
-
-.memo {
-  background: #f0f2f5;
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 8px;
-  white-space: pre-wrap;
-}
-
-.empty {
-  text-align: center;
-  color: #777;
-  margin-top: 40px;
-}
+.date { font-size: 14px; color: #666; }
+.name { font-weight: bold; font-size: 18px; margin: 6px 0; }
+.color { margin: 6px 0; }
+.memo { white-space: pre-wrap; }
 
 button {
   width: 100%;
   padding: 14px;
   margin-top: 20px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: none;
   background: #007aff;
   color: white;
+  border: none;
+  border-radius: 12px;
 }
 </style>
 </head>
@@ -74,42 +42,25 @@ button {
 
 <div id="list"></div>
 
-<button onclick="location.href='index.html'">選定に戻る</button>
+<button onclick="location.href='index.html'">＋ 新しく選定する</button>
 
 <script>
-const listBox = document.getElementById("list");
+const list = document.getElementById("list");
 const records = JSON.parse(localStorage.getItem("records") || "[]");
 
 if (records.length === 0) {
-  listBox.innerHTML = "<div class='empty'>保存されたカルテはまだありません</div>";
+  list.innerHTML = "まだカルテがありません";
 } else {
-  records.reverse().forEach(r => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <div class="row">
-        <div class="label">日付</div>
-        <div class="value">${r.date}</div>
+  records.forEach(r => {
+    list.innerHTML += `
+      <div class="card">
+        <div class="date">${r.date}</div>
+        <div class="name">${r.name}</div>
+        <div class="color">🎨 ${r.color}</div>
+        <div>評価：${r.rating}</div>
+        <div class="memo">${r.memo}</div>
       </div>
-
-      <div class="row">
-        <div class="label">お客さま名</div>
-        <div class="value">${r.name || "（未入力）"}</div>
-      </div>
-
-      <div class="row">
-        <div class="label">色味</div>
-        <div class="value">${r.color}</div>
-      </div>
-
-      <div class="row">
-        <div class="label">評価</div>
-        <div class="value star">${r.result}</div>
-      </div>
-
-      <div class="memo">${r.memo || "（メモなし）"}</div>
     `;
-    listBox.appendChild(div);
   });
 }
 </script>
