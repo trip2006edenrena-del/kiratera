@@ -2,67 +2,58 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ一覧</title>
-
 <style>
-body {
-  font-family: sans-serif;
-  background: #f5f7fa;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 14px;
-  margin-bottom: 14px;
-  box-shadow: 0 4px 10px rgba(0,0,0,.08);
-}
-
-.date { font-size: 14px; color: #666; }
-.name { font-weight: bold; font-size: 18px; margin: 6px 0; }
-.color { margin: 6px 0; }
-.memo { white-space: pre-wrap; }
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-  background: #007aff;
-  color: white;
-  border: none;
-  border-radius: 12px;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 20px; }
+h1 { margin-top: 0; }
+.card { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
+.card strong { display: inline-block; width: 80px; }
+button { padding: 8px 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 8px; }
+.delete-btn { background: #ff4d4d; color: #fff; }
+.sub { background: #007aff; color: #fff; margin-bottom: 20px; }
 </style>
 </head>
-
 <body>
 
-<h1>📋 カルテ一覧</h1>
-
+<h1>📄 保存済みカルテ一覧</h1>
+<button class="sub" onclick="location.href='record.html'">新しいカルテを作成</button>
 <div id="list"></div>
 
-<button onclick="location.href='index.html'">＋ 新しく選定する</button>
-
 <script>
-const list = document.getElementById("list");
-const records = JSON.parse(localStorage.getItem("records") || "[]");
-
-if (records.length === 0) {
-  list.innerHTML = "まだカルテがありません";
-} else {
-  records.forEach(r => {
-    list.innerHTML += `
-      <div class="card">
-        <div class="date">${r.date}</div>
-        <div class="name">${r.name}</div>
-        <div class="color">🎨 ${r.color}</div>
-        <div>評価：${r.rating}</div>
-        <div class="memo">${r.memo}</div>
-      </div>
+function renderList() {
+  const list = document.getElementById("list");
+  const records = JSON.parse(localStorage.getItem("records") || "[]");
+  if(records.length === 0){
+    list.innerHTML = "<p>保存されたカルテはありません。</p>";
+    return;
+  }
+  list.innerHTML = "";
+  records.forEach((r, index) => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <p><strong>日付:</strong> ${r.date}</p>
+      <p><strong>名前:</strong> ${r.name}</p>
+      <p><strong>色味:</strong> ${r.color}</p>
+      <p><strong>髪状態:</strong> ${r.hair}</p>
+      <p><strong>評価:</strong> ${r.rating}</p>
+      <p><strong>メモ:</strong> ${r.memo}</p>
+      <button class="delete-btn" onclick="deleteRecord(${index})">削除</button>
     `;
+    list.appendChild(div);
   });
 }
+
+function deleteRecord(idx){
+  const records = JSON.parse(localStorage.getItem("records") || "[]");
+  if(!confirm("本当に削除しますか？")) return;
+  records.splice(idx,1);
+  localStorage.setItem("records", JSON.stringify(records));
+  renderList();
+}
+
+renderList();
 </script>
 
 </body>
