@@ -52,9 +52,10 @@ h1 { text-align: center; }
   border: none;
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: pointer;
 }
 
-/* レスポンシブ */
+/* レスポンシブ対応 */
 @media (max-width: 600px) {
   .fixed-top-container { flex-direction: column; gap: 6px; padding: 10px; }
   .fixed-top-container button { font-size: 14px; }
@@ -65,13 +66,9 @@ h1 { text-align: center; }
 
 <body>
 
-<!-- 上部固定ボタン -->
-<div class="fixed-top-container">
-  <button onclick="location.href='record_list.html'">📄 保存済みカルテ一覧</button>
-</div>
-
 <h1>① エクステ色を選択</h1>
 
+<!-- 色選択グリッド -->
 <div class="grid">
   <button onclick="go('1#')">1#</button>
   <button onclick="go('NB')">NB</button>
@@ -87,9 +84,23 @@ h1 { text-align: center; }
 </div>
 
 <script>
+// 色選択遷移
 function go(color) {
   location.href = `hair.html?color=${encodeURIComponent(color)}`;
 }
+
+// ページロード時に固定ボタンを動的追加
+window.addEventListener("DOMContentLoaded", () => {
+  const container = document.createElement("div");
+  container.className = "fixed-top-container";
+
+  const listBtn = document.createElement("button");
+  listBtn.textContent = "📄 保存済みカルテ一覧";
+  listBtn.onclick = () => location.href = 'record_list.html';
+
+  container.appendChild(listBtn);
+  document.body.prepend(container);
+});
 </script>
 
 </body>
