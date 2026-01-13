@@ -3,74 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>薬剤選定結果</title>
+<title>エクステ用 薬剤選定ツール</title>
 
 <style>
 body {
-  font-family: sans-serif;
-  background: #f5f7fa;
-  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background:#f5f7fa;
+  padding:20px;
 }
 
-.box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+h1 { font-size:22px; margin-bottom:10px; }
+h2 { font-size:18px; margin:20px 0 10px; }
 
-.red {
-  color: red;
-  font-weight: bold;
+.section {
+  background:#fff;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom:20px;
 }
 
 button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 14px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: none;
-  background: #007aff;
-  color: white;
+  width:100%;
+  padding:14px;
+  margin:6px 0;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:#007aff;
+  color:#fff;
+}
+
+button.sub {
+  background:#9aa0a6;
+}
+
+.result {
+  font-size:16px;
+  line-height:1.6;
+}
+
+.stella { color:#f3a4c7; font-weight:600; }
+.mood { color:#9ea3a8; font-weight:600; }
+.cocoa { color:#b08a63; font-weight:600; }
+
+.warning {
+  color:#e53935;
+  font-weight:700;
+}
+
+.customer-note {
+  font-size:14px;
+  color:#555;
 }
 </style>
 </head>
 
 <body>
 
-<h1>薬剤選定</h1>
+<h1>エクステ薬剤選定</h1>
 
-<div class="box" id="result"></div>
+<div class="section">
+  <h2>① 色味選択</h2>
+  <button onclick="selectColor('1#')">1#</button>
+  <button onclick="selectColor('NB')">NB</button>
+  <button onclick="selectColor('2#')">2#</button>
+  <button onclick="selectColor('3#')">3#</button>
+  <button onclick="selectColor('4#')">4#</button>
+  <button onclick="selectColor('5#')">5#</button>
+  <button onclick="selectColor('6#')">6#</button>
+  <button onclick="selectColor('6A')">6A</button>
+  <button onclick="selectColor('7A')">7A</button>
+  <button onclick="selectColor('8#')">8#</button>
+  <button onclick="selectColor('29#')">29#</button>
+</div>
 
-<button onclick="location.href='index.html'">色味に戻る</button>
-<button onclick="history.back()">髪の状態に戻る</button>
+<div class="section">
+  <h2>② 髪の状態</h2>
+  <button onclick="selectType('color')">カラー毛</button>
+  <button onclick="selectType('bleach')">ブリーチ毛</button>
+</div>
+
+<div class="section">
+  <h2>③ 薬剤選定</h2>
+  <div class="result" id="result">色味と髪の状態を選択してください</div>
+</div>
 
 <script>
-const p = new URLSearchParams(location.search);
-const color = p.get('color');
-const type = p.get('type');
+const data = {
+  "1#": {
+    both: "オフブラック"
+  },
+  "NB": {
+    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍"
+  },
+  "2#": {
+    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ4.5% 2倍"
+  },
+  "3#": {
+    color: "<span class='stella'>ステラミルクティー</span>7 / オキシ3% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ3%"
+  },
+  "4#": {
+    color: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍",
+    bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ4.5% 2倍"
+  },
+  "5#": {
+    color: "<span class='stella'>ステラミルクティー</span>13 / オキシ6% 2倍",
+    bleach: "<span class='cocoa'>チルココア</span>9 / オキシ6% 2倍"
+  },
+  "6#": {
+    color: "<span class='mood'>ムードスモーク</span>13 / オキシ6% 2倍",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ6%"
+  },
+  "6A": {
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ 必ずブリーチが必要</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 / オキシ4.5% 2倍"
+  },
+  "7A": {
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>9 + ステラ13（1:1）/ オキシ4.5% 2倍"
+  },
+  "8#": {
+    color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
+    bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
+  },
+  "29#": {
+    both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍"
+  }
+};
 
-let text = '';
+let selectedColor = null;
+let selectedType = null;
 
-if(color === '3' && type === 'bleach'){
-  text = `
-<strong>3# / ブリーチ毛</strong><br><br>
-ムードスモーク7 + チルココア7（1:1）<br>
-オキシ 3%
-`;
-}
-else if(color === '6A' && type === 'color'){
-  text = `<span class="red">⚠ カラー毛不可</span><br>必ずブリーチが必要`;
-}
-else{
-  text = `
-縮毛部分は暗くなりやすいため<br>
-<strong>ワントーン上げ + オキシ6%</strong>
-`;
+function selectColor(c) {
+  selectedColor = c;
+  showResult();
 }
 
-document.getElementById('result').innerHTML = text;
+function selectType(t) {
+  selectedType = t;
+  showResult();
+}
+
+function showResult() {
+  const r = document.getElementById("result");
+
+  if (!selectedColor || !selectedType) {
+    r.innerHTML = "色味と髪の状態を選択してください";
+    return;
+  }
+
+  const item = data[selectedColor];
+
+  if (item.both) {
+    r.innerHTML = item.both;
+    return;
+  }
+
+  if (selectedType === "color") {
+    r.innerHTML = item.color || "該当なし";
+    return;
+  }
+
+  if (selectedType === "bleach") {
+    r.innerHTML = item.bleach || "該当なし";
+  }
+}
 </script>
 
 </body>
