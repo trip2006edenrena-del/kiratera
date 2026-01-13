@@ -3,44 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>エクステ用 薬剤選定ツール</title>
+<title>薬剤選定結果</title>
 
 <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background:#f5f7fa;
-  padding:20px;
+  background: #f5f7fa;
+  padding: 20px;
 }
 
-h1 { font-size:22px; margin-bottom:10px; }
-h2 { font-size:18px; margin:20px 0 10px; }
-
-.section {
-  background:#fff;
-  padding:16px;
-  border-radius:14px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom:20px;
+.box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 button {
-  width:100%;
-  padding:14px;
-  margin:6px 0;
-  font-size:16px;
-  border:none;
-  border-radius:12px;
-  background:#007aff;
-  color:#fff;
-}
-
-button.sub {
-  background:#9aa0a6;
-}
-
-.result {
-  font-size:16px;
-  line-height:1.6;
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+  background: #007aff;
+  color: white;
 }
 
 .stella { color:#f3a4c7; font-weight:600; }
@@ -48,58 +35,31 @@ button.sub {
 .cocoa { color:#b08a63; font-weight:600; }
 
 .warning {
-  color:#e53935;
-  font-weight:700;
+  color: red;
+  font-weight: bold;
 }
 
 .customer-note {
-  font-size:14px;
-  color:#555;
+  font-size: 14px;
+  color: #555;
 }
 </style>
 </head>
 
 <body>
 
-<h1>エクステ薬剤選定</h1>
+<h1>薬剤選定</h1>
 
-<div class="section">
-  <h2>① 色味選択</h2>
-  <button onclick="selectColor('1#')">1#</button>
-  <button onclick="selectColor('NB')">NB</button>
-  <button onclick="selectColor('2#')">2#</button>
-  <button onclick="selectColor('3#')">3#</button>
-  <button onclick="selectColor('4#')">4#</button>
-  <button onclick="selectColor('5#')">5#</button>
-  <button onclick="selectColor('6#')">6#</button>
-  <button onclick="selectColor('6A')">6A</button>
-  <button onclick="selectColor('7A')">7A</button>
-  <button onclick="selectColor('8#')">8#</button>
-  <button onclick="selectColor('29#')">29#</button>
-</div>
+<div class="box" id="result">読み込み中…</div>
 
-<div class="section">
-  <h2>② 髪の状態</h2>
-  <button onclick="selectType('color')">カラー毛</button>
-  <button onclick="selectType('bleach')">ブリーチ毛</button>
-</div>
-
-<div class="section">
-  <h2>③ 薬剤選定</h2>
-  <div class="result" id="result">色味と髪の状態を選択してください</div>
-</div>
+<button onclick="location.href='index.html'">色味に戻る</button>
+<button onclick="location.href='hair.html'">髪の状態に戻る</button>
 
 <script>
 const data = {
-  "1#": {
-    both: "オフブラック"
-  },
-  "NB": {
-    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍"
-  },
-  "2#": {
-    both: "<span class='stella'>ステラミルクティー</span>5 / オキシ4.5% 2倍"
-  },
+  "1#": { both: "オフブラック" },
+  "NB": { both: "<span class='stella'>ステラミルクティー</span>5 / オキシ3% 2倍" },
+  "2#": { both: "<span class='stella'>ステラミルクティー</span>5 / オキシ4.5% 2倍" },
   "3#": {
     color: "<span class='stella'>ステラミルクティー</span>7 / オキシ3% 2倍",
     bleach: "<span class='mood'>ムードスモーク</span>7 + <span class='cocoa'>チルココア</span>7（1:1）/ オキシ3%"
@@ -128,46 +88,25 @@ const data = {
     color: "<div class='warning'>⚠ カラー毛不可</div><div class='customer-note'>※ ブリーチ必須</div>",
     bleach: "<span class='stella'>ステラミルクティー</span>13 + <span class='cocoa'>チルココア</span>9（10%）/ オキシ3% 2倍"
   },
-  "29#": {
-    both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍"
-  }
+  "29#": { both: "<span class='stella'>ステラミルクティー</span>13 / オキシ3% 2倍" }
 };
 
-let selectedColor = null;
-let selectedType = null;
+// URLパラメータ取得
+const params = new URLSearchParams(location.search);
+const color = params.get("color");
+const type = params.get("type");
 
-function selectColor(c) {
-  selectedColor = c;
-  showResult();
-}
+const resultBox = document.getElementById("result");
 
-function selectType(t) {
-  selectedType = t;
-  showResult();
-}
-
-function showResult() {
-  const r = document.getElementById("result");
-
-  if (!selectedColor || !selectedType) {
-    r.innerHTML = "色味と髪の状態を選択してください";
-    return;
-  }
-
-  const item = data[selectedColor];
+if (!color || !type) {
+  resultBox.innerHTML = "選択情報がありません。最初からやり直してください。";
+} else {
+  const item = data[color];
 
   if (item.both) {
-    r.innerHTML = item.both;
-    return;
-  }
-
-  if (selectedType === "color") {
-    r.innerHTML = item.color || "該当なし";
-    return;
-  }
-
-  if (selectedType === "bleach") {
-    r.innerHTML = item.bleach || "該当なし";
+    resultBox.innerHTML = item.both;
+  } else {
+    resultBox.innerHTML = type === "color" ? item.color : item.bleach;
   }
 }
 </script>
