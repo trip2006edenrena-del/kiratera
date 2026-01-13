@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>髪の状態選択</title>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f7f7f7;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 { margin-bottom: 20px; }
+
+button {
+  width: 100%;
+  padding: 18px;
+  font-size: 18px;
+  margin: 15px 0;
+  border-radius: 14px;
+  border: none;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>② 髪の状態を選択</h1>
+
+<button onclick="go('color')">カラー毛</button>
+<button onclick="go('bleach')">ブリーチ毛</button>
+
+<script>
+const params = new URLSearchParams(location.search);
+const color = params.get("color");
+
+function go(hair){
+  location.href = `result.html?color=${encodeURIComponent(color)}&hair=${hair}`;
+}
+</script>
+</body>
+</html>
