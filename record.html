@@ -121,36 +121,29 @@ function setResult(r) {
   alert("評価を選択しました：" + r);
 }
 
-function save() {
-  const name = document.getElementById("customer").value.trim();
-  const memo = document.getElementById("memo").value;
-
-  if (!name) {
-    alert("お客さま名を入力してください");
-    return;
-  }
-
-  if (!result) {
-    alert("評価を選択してください");
-    return;
-  }
-
+<script>
+function saveRecord() {
   const record = {
-    date: new Date().toLocaleString(),
-    name,
-    color,
-    hair,
-    result,
-    memo
+    date: document.getElementById("date").value,
+    name: document.getElementById("name").value,
+    color: document.getElementById("color").innerText,
+    rating: document.querySelector('input[name="rating"]:checked')?.value,
+    memo: document.getElementById("memo").value
   };
 
+  if (!record.name || !record.rating) {
+    alert("名前と評価は必須です");
+    return;
+  }
+
   const records = JSON.parse(localStorage.getItem("records") || "[]");
-  records.push(record);
+  records.unshift(record); // 新しい順
   localStorage.setItem("records", JSON.stringify(records));
 
-  alert("カルテを保存しました！");
+  location.href = "record_list.html";
 }
 </script>
+
 
 </body>
 </html>
