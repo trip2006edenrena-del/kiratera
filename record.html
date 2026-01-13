@@ -5,21 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ記録</title>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 20px; }
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 80px 20px 20px; }
 h1 { margin-top: 0; }
 .box { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
 label { font-weight: bold; display: block; margin-bottom: 6px; }
 input, textarea { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #ccc; }
 textarea { min-height: 80px; }
-.star-btn { width: 100%; padding: 14px; margin-top: 10px; font-size: 18px; border-radius: 12px; border: none; cursor: pointer; }
-.success { background: #ffd700; }
-.normal { background: #cfd8dc; }
-.fail { background: #ffb3b3; }
-button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-radius: 12px; border: none; background: #007aff; color: #fff; cursor: pointer; }
-.sub { background: #9aa0a6; }
+.star-btn { width: 100%; padding: 14px; margin-top: 10px; font-size: 18px; border-radius: 12px; border: none; cursor: pointer; color: #fff; }
+.success { background: #ffd700; color: #000; }
+.normal { background: #cfd8dc; color: #000; }
+.fail { background: #ff4d4d; color: #fff; }
+button { width: 100%; padding: 14px; margin-top: 12px; font-size: 16px; border-radius: 12px; border: none; cursor: pointer; }
+.sub { background: #007aff; color: #fff; }
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #007aff;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  z-index: 1000;
+  border: none;
+  cursor: pointer;
+  border-radius: 0 0 12px 12px;
+}
 </style>
 </head>
 <body>
+
+<button class="fixed-top" onclick="location.href='record_list.html'">📄 保存済みカルテ一覧へ</button>
 
 <h1>📝 カルテ記録</h1>
 
@@ -80,11 +96,11 @@ function saveRecord() {
   }
 
   const records = JSON.parse(localStorage.getItem("records") || "[]");
-  records.unshift(record); // 新しい順に保存
+  records.unshift(record);
   localStorage.setItem("records", JSON.stringify(records));
 
   alert("カルテを保存しました！");
-  location.href = "record_list.html"; // 保存後に一覧へ移動
+  location.href = "record_list.html";
 }
 </script>
 </body>
