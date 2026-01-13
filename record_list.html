@@ -5,129 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カルテ一覧</title>
 <style>
-/* 基本スタイル */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f7fa;
-  padding: 100px 20px 20px;
-  margin: 0;
-}
-h1 { margin-top: 0; text-align: center; }
-
-/* 上部固定ボタンコンテナ */
-.fixed-top-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between; /* 左右に分散 */
-  gap: 8px;
-  background: #007aff;
-  padding: 12px 10px;
-  z-index: 1000;
-  box-sizing: border-box;
-  flex-wrap: wrap; /* 狭い画面では縦並び */
-}
-.fixed-top-container button {
-  flex: 1;
-  min-width: 140px;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 0;
-  font-size: 16px;
-  cursor: pointer;
-  color: #fff;
-  background: #005fcc;
-}
-
-/* カルテカード */
-.card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-}
-.card p { margin: 6px 0; }
-
-/* 評価の色分け */
-.success { background: #ffd700; padding: 4px 8px; border-radius: 6px; color: #000; }
-.normal { background: #cfd8dc; padding: 4px 8px; border-radius: 6px; color: #000; }
-.fail { background: #ff4d4d; padding: 4px 8px; border-radius: 6px; color: #fff; }
-
-/* 削除ボタン */
-.delete-btn { background: #ff4d4d; color: #fff; padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; margin-top: 6px; }
-
-/* レスポンシブ対応 */
-@media (max-width: 600px) {
-  .fixed-top-container {
-    flex-direction: column;
-    gap: 6px;
-    padding: 10px;
-  }
-  .fixed-top-container button { font-size: 14px; min-width: auto; }
-}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f7fa;padding:100px 20px 20px;margin:0;}
+h1{text-align:center;margin-top:0;}
+.card{background:#fff;padding:16px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px;}
+.card p{margin:6px 0;}
+.success{background:#ffd700;padding:4px 8px;border-radius:6px;color:#000;}
+.normal{background:#cfd8dc;padding:4px 8px;border-radius:6px;color:#000;}
+.fail{background:#ff4d4d;padding:4px 8px;border-radius:6px;color:#fff;}
+.delete-btn{background:#ff4d4d;color:#fff;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;margin-top:6px;}
+.fixed-top-container{position:fixed;top:0;left:0;width:100%;display:flex;gap:8px;padding:10px;background:#007aff;z-index:1000;flex-wrap:wrap;box-sizing:border-box;}
+.fixed-top-container button{flex:1;min-width:120px;border:none;border-radius:8px;padding:10px 0;font-size:16px;color:#fff;background:#005fcc;cursor:pointer;}
+@media(max-width:600px){.fixed-top-container{flex-direction:column;gap:6px;}.fixed-top-container button{font-size:14px;}}
 </style>
 </head>
 <body>
 
-<!-- 上部固定ボタン（横並び、狭い画面は縦並び） -->
 <div class="fixed-top-container">
-  <button onclick="location.href='record.html'">📝 新しいカルテ作成</button>
-  <button onclick="location.href='index.html'">🎨 色味選択に戻る</button>
+  <button onclick="location.href='record.html'">📝 新規作成</button>
+  <button onclick="location.href='index.html'">🎨 色味選択</button>
 </div>
 
 <h1>📄 保存済みカルテ一覧</h1>
 <div id="list"></div>
 
 <script>
-// カルテ一覧表示
-function renderList() {
-  const list = document.getElementById("list");
-  const records = JSON.parse(localStorage.getItem("records") || "[]");
-
-  if(records.length === 0){
-    list.innerHTML = "<p style='text-align:center;'>保存されたカルテはありません。</p>";
-    return;
-  }
-
-  list.innerHTML = "";
-  records.forEach((r, index) => {
-    const div = document.createElement("div");
-    div.className = "card";
-
-    // 評価の色分け
-    let ratingColor = "";
-    if(r.rating.includes("成功")) ratingColor = "success";
-    else if(r.rating.includes("普通")) ratingColor = "normal";
-    else if(r.rating.includes("反省")) ratingColor = "fail";
-
-    div.innerHTML = `
+function renderList(){
+  const list=document.getElementById("list");
+  const records=JSON.parse(localStorage.getItem("records")||"[]");
+  if(records.length===0){ list.innerHTML="<p style='text-align:center;'>保存されたカルテはありません。</p>"; return; }
+  list.innerHTML="";
+  records.forEach((r,i)=>{
+    let ratingColor="";
+    if(r.rating.includes("成功")) ratingColor="success";
+    else if(r.rating.includes("普通")) ratingColor="normal";
+    else if(r.rating.includes("反省")) ratingColor="fail";
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
       <p><strong>日付:</strong> ${r.date}</p>
       <p><strong>名前:</strong> ${r.name}</p>
       <p><strong>色味:</strong> ${r.color}</p>
       <p><strong>髪状態:</strong> ${r.hair}</p>
       <p><strong>評価:</strong> <span class="${ratingColor}">${r.rating}</span></p>
       <p><strong>メモ:</strong> ${r.memo}</p>
-      <button class="delete-btn" onclick="deleteRecord(${index})">削除</button>
+      <button class="delete-btn" onclick="deleteRecord(${i})">削除</button>
     `;
     list.appendChild(div);
   });
 }
-
-// 削除処理
 function deleteRecord(idx){
-  const records = JSON.parse(localStorage.getItem("records") || "[]");
+  const records=JSON.parse(localStorage.getItem("records")||"[]");
   if(!confirm("本当に削除しますか？")) return;
   records.splice(idx,1);
-  localStorage.setItem("records", JSON.stringify(records));
+  localStorage.setItem("records",JSON.stringify(records));
   renderList();
 }
-
-// 初期表示
 renderList();
 </script>
-
 </body>
 </html>
